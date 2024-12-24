@@ -1,6 +1,9 @@
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    const baseUrl = url.hostname === "blog-oauth.a1634358912.workers.dev" 
+      ? "https://blog-oauth.a1634358912.workers.dev"
+      : url.origin;
 
     // 处理 CORS
     if (request.method === "OPTIONS") {
@@ -21,6 +24,10 @@ export default {
       }
 
       try {
+        if (!env.GITHUB_CLIENT_SECRET) {
+          throw new Error('GitHub Client Secret is not configured');
+        }
+
         // 交换 code 获取 access token
         const tokenResponse = await fetch(
           "https://github.com/login/oauth/access_token",
@@ -38,20 +45,30 @@ export default {
           }
         );
 
+        if (!tokenResponse.ok) {
+          const errorText = await tokenResponse.text();
+          throw new Error(`GitHub API error: ${errorText}`);
+        }
+
         const data = await tokenResponse.json();
         
         if (!data.access_token) {
-          throw new Error('Failed to get access token');
+          throw new Error('GitHub did not return an access token');
         }
         
         // 重定向回编辑器页面，将 token 作为 URL 参数
-        // 使用实际的博客网站域名
         return Response.redirect(
-          `https://my-blog.pages.dev/editor/callback?token=${data.access_token}`,
+          `${baseUrl}/editor/callback?token=${data.access_token}`,
           302
         );
       } catch (error) {
-        return new Response(`Error: ${error.message}`, { status: 500 });
+        return new Response(`Error: ${error.message}`, {
+          status: 500,
+          headers: {
+            "Content-Type": "text/plain",
+            "Access-Control-Allow-Origin": "*",
+          },
+        });
       }
     }
 
