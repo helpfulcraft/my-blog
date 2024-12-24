@@ -1,6 +1,6 @@
 <template>
   <div class="article-container">
-    <Article 
+    <NotionEditor
       v-if="article" 
       :content="article.content"
       :path="article.path"
@@ -14,6 +14,7 @@
 <script setup>
 import { data as articles } from './[...all].paths'
 import { useData } from 'vitepress'
+import NotionEditor from '../.vitepress/theme/components/NotionEditor.vue'
 
 const { page } = useData()
 const article = articles.find(a => a.url === page.value.relativePath)

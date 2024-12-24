@@ -10,6 +10,10 @@
     "preview": "vitepress preview docs"
   },
   "dependencies": {
+    "@tiptap/extension-placeholder": "^2.10.4",
+    "@tiptap/pm": "^2.10.4",
+    "@tiptap/starter-kit": "^2.10.4",
+    "@tiptap/vue-3": "^2.10.4",
     "gray-matter": "^4.0.3",
     "markdown-it": "^14.1.0",
     "markdown-it-mathjax3": "^4.3.2",
