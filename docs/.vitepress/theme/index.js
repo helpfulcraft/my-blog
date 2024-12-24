@@ -1,15 +1,13 @@
 // .vitepress/theme/index.js
 import DefaultTheme from 'vitepress/theme'
 import './custom.css'
-import BlogEditor from './components/BlogEditorNew.vue'
-import InlineEditor from './components/InlineEditor.vue'
-import Article from './components/Article.vue'
+import Layout from './Layout.vue'
+import NotionEditor from './components/NotionEditor.vue'
 
 export default {
-  ...DefaultTheme,
+  extends: DefaultTheme,
+  Layout,
   enhanceApp({ app }) {
-    app.component('BlogEditor', BlogEditor)
-    app.component('InlineEditor', InlineEditor)
-    app.component('Article', Article)
+    app.component('NotionEditor', NotionEditor)
   }
 }
