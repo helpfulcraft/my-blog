@@ -5,14 +5,16 @@ sidebar: false
 
 <script setup>
 import { onMounted } from 'vue'
-import { useRouter } from 'vitepress'
 
-onMounted(async () => {
+onMounted(() => {
   const token = new URLSearchParams(window.location.search).get('token')
   if (token) {
     // 存储 token
     localStorage.setItem('github_token', token)
     // 跳转回编辑器页面
+    window.location.href = '/editor/'
+  } else {
+    alert('登录失败：未获取到 token')
     window.location.href = '/editor/'
   }
 })
