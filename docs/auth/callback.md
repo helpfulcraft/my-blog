@@ -8,29 +8,16 @@ onMounted(() => {
   const code = urlParams.get('code')
   
   if (code) {
-    // 这里需要一个后端服务来处理 GitHub OAuth
-    fetch('YOUR_BACKEND_URL/auth/github', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ code })
-    })
-    .then(response => response.json())
-    .then(data => {
-      // 发送 token 给父窗口
-      window.opener.postMessage({
-        type: 'github_auth',
-        token: data.access_token
-      }, window.location.origin)
-      
-      // 关闭窗口
-      window.close()
-    })
-    .catch(error => {
-      console.error('Auth error:', error)
-      alert('认证失败，请重试')
-    })
+    // 调用 Cloudflare Worker 处理认证
+    fetch(`https://auth.my-blog-helpfulcraft.pages.dev/auth?code=${code}`)
+      .then(response => response.text())
+      .then(html => {
+        document.body.innerHTML = html
+      })
+      .catch(error => {
+        console.error('Auth error:', error)
+        document.body.innerHTML = '认证失败，请重试'
+      })
   }
 })
 </script>

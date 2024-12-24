@@ -1,0 +1,7 @@
+name = "blog-auth"
+main = "auth.js"
+compatibility_date = "2023-12-24"
+
+routes = [
+  { pattern = "auth.my-blog-helpfulcraft.pages.dev", custom_domain = true }
+]

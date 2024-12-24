@@ -22,8 +22,8 @@ export default {
     const userName = ref('')
 
     // GitHub OAuth 配置
-    const clientId = 'YOUR_GITHUB_CLIENT_ID'
-    const redirectUri = 'http://localhost:5173/auth/callback'
+    const clientId = 'Ov23liCN7hteMLHGth2i'
+    const redirectUri = 'https://my-blog-helpfulcraft.pages.dev/auth/callback'
     const scope = 'repo'
 
     async function checkAuth() {
@@ -32,7 +32,8 @@ export default {
         try {
           const response = await fetch('https://api.github.com/user', {
             headers: {
-              'Authorization': `token ${token}`
+              'Authorization': `token ${token}`,
+              'User-Agent': 'My-Blog'
             }
           })
           if (response.ok) {
@@ -51,8 +52,21 @@ export default {
     }
 
     function login() {
+      loading.value = true
       const authUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`
-      window.location.href = authUrl
+      const authWindow = window.open(authUrl, 'github-oauth', 'width=600,height=800')
+
+      window.addEventListener('message', async (event) => {
+        if (event.origin !== window.location.origin) return
+        
+        if (event.data.type === 'github_auth') {
+          const { token } = event.data
+          localStorage.setItem('github_token', token)
+          await checkAuth()
+          loading.value = false
+          authWindow?.close()
+        }
+      })
     }
 
     function logout() {
@@ -64,17 +78,6 @@ export default {
 
     onMounted(() => {
       checkAuth()
-
-      // 监听来自认证页面的消息
-      window.addEventListener('message', async (event) => {
-        if (event.origin !== window.location.origin) return
-        
-        if (event.data.type === 'github_auth') {
-          const { token } = event.data
-          localStorage.setItem('github_token', token)
-          await checkAuth()
-        }
-      })
     })
 
     return {
