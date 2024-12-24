@@ -5,6 +5,9 @@
       :content="article.content"
       :path="article.path"
     />
+    <div v-else class="not-found">
+      文章未找到
+    </div>
   </div>
 </template>
 
@@ -21,5 +24,11 @@ const article = articles.find(a => a.url === page.value.relativePath)
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem 1rem;
+}
+
+.not-found {
+  text-align: center;
+  padding: 2rem;
+  color: var(--vp-c-text-2);
 }
 </style>
