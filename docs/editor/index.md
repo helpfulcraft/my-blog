@@ -5,7 +5,6 @@ sidebar: false
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useData } from 'vitepress'
 
 const title = ref('')
 const content = ref('')
@@ -13,24 +12,17 @@ const tags = ref('')
 const description = ref('')
 const githubToken = ref('')
 const isLoggedIn = ref(false)
-const showEditor = ref(false)
-
-const { site } = useData()
 
 onMounted(() => {
-  // 检查本地存储中的 token
   const token = localStorage.getItem('github_token')
   if (token) {
     githubToken.value = token
     isLoggedIn.value = true
   }
-  showEditor.value = true
 })
 
-async function handleLogin() {
-  // GitHub OAuth 登录
+function handleLogin() {
   const clientId = 'Ov23liRHUKlP6b6PhVoC'
-  // 使用 Cloudflare Worker 处理 OAuth
   const workerUrl = 'https://blog-oauth.a1634358912.workers.dev'
   const redirectUri = `${workerUrl}/oauth/callback`
   const scope = 'repo'
@@ -58,6 +50,11 @@ tags: [${tags.value.split(',').map(tag => `'${tag.trim()}'`).join(', ')}]
 ${content.value}
 `
     
+    // 使用 TextEncoder 来处理 UTF-8 字符
+    const encoder = new TextEncoder()
+    const data = encoder.encode(fileContent)
+    const base64Content = btoa(String.fromCharCode(...new Uint8Array(data)))
+    
     // 使用 GitHub API 创建文件
     const response = await fetch(`https://api.github.com/repos/helpfulcraft/my-blog/contents/docs/articles/${fileName}`, {
       method: 'PUT',
@@ -67,7 +64,7 @@ ${content.value}
       },
       body: JSON.stringify({
         message: `feat: add new article - ${title.value}`,
-        content: btoa(fileContent),
+        content: base64Content,
         branch: 'master'
       })
     })
@@ -80,32 +77,76 @@ ${content.value}
       tags.value = ''
       description.value = ''
     } else {
-      throw new Error('发布失败')
+      const errorData = await response.json()
+      throw new Error(`发布失败: ${errorData.message}`)
     }
   } catch (error) {
     alert('发布失败：' + error.message)
+    console.error('发布错误：', error)
   }
-}
-
-if (typeof window !== 'undefined') {
-  const BlogEditor = defineAsyncComponent(() =>
-    import('../.vitepress/theme/components/BlogEditor.vue')
-  )
 }
 </script>
 
-<ClientOnly>
-  <Suspense>
-    <template #default>
-      <BlogEditor />
-    </template>
-    <template #fallback>
-      <div class="loading">
-        <p>加载中...</p>
+<template>
+  <div class="editor-container">
+    <div v-if="!isLoggedIn" class="login-section">
+      <h2>请先登录</h2>
+      <button @click="handleLogin" class="login-button">
+        使用 GitHub 登录
+      </button>
+    </div>
+    
+    <div v-else class="editor-form">
+      <div class="form-group">
+        <label for="title">标题：</label>
+        <input 
+          id="title"
+          v-model="title"
+          type="text"
+          placeholder="文章标题"
+          class="form-input"
+        />
       </div>
-    </template>
-  </Suspense>
-</ClientOnly>
+
+      <div class="form-group">
+        <label for="description">描述：</label>
+        <input 
+          id="description"
+          v-model="description"
+          type="text"
+          placeholder="文章简短描述"
+          class="form-input"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="tags">标签：</label>
+        <input 
+          id="tags"
+          v-model="tags"
+          type="text"
+          placeholder="标签，用逗号分隔"
+          class="form-input"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="content">内容：</label>
+        <textarea 
+          id="content"
+          v-model="content"
+          placeholder="使用 Markdown 编写文章内容"
+          class="form-textarea"
+          rows="20"
+        ></textarea>
+      </div>
+
+      <button @click="handlePublish" class="publish-button">
+        发布文章
+      </button>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 .editor-container {
@@ -116,7 +157,7 @@ if (typeof window !== 'undefined') {
 
 .login-section {
   text-align: center;
-  padding: 40px 0;
+  padding: 40px;
 }
 
 .form-group {
@@ -144,6 +185,7 @@ if (typeof window !== 'undefined') {
   border-radius: 4px;
   font-size: 16px;
   font-family: monospace;
+  resize: vertical;
 }
 
 .login-button,
@@ -155,6 +197,7 @@ if (typeof window !== 'undefined') {
   border-radius: 4px;
   cursor: pointer;
   font-size: 16px;
+  transition: background-color 0.2s;
 }
 
 .login-button:hover,
@@ -162,10 +205,8 @@ if (typeof window !== 'undefined') {
   background-color: var(--vp-c-brand-dark);
 }
 
-.loading {
-  text-align: center;
-  padding: 40px;
-  font-size: 1.2em;
-  color: #666;
+.login-button:active,
+.publish-button:active {
+  transform: translateY(1px);
 }
 </style>
