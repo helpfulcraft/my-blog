@@ -2,10 +2,14 @@
 
 ## 文章分类
 
+### Cloudflare (1)
+- [将 VitePress 博客部署到 Cloudflare Pages](/articles/deploy-to-cloudflare) - 2024/12/24
+
 ### Markdown (1)
 - [Markdown 高级语法指南](/articles/markdown-advanced-guide) - 2024/12/24
 
-### VitePress (1)
+### VitePress (2)
+- [将 VitePress 博客部署到 Cloudflare Pages](/articles/deploy-to-cloudflare) - 2024/12/24
 - [开始使用 VitePress 搭建个人博客](/articles/getting-started-with-vitepress) - 2024/12/24
 
 ### 入门 (1)
@@ -30,3 +34,6 @@
 
 ### 示例 (1)
 - [多级标题示例文章](/articles/nested-headings-demo) - 2024/12/24
+
+### 部署 (1)
+- [将 VitePress 博客部署到 Cloudflare Pages](/articles/deploy-to-cloudflare) - 2024/12/24
