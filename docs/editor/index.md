@@ -20,7 +20,7 @@ async function handleLogin() {
   // GitHub OAuth 登录
   const clientId = 'Ov23liRHUKlP6b6PhVoC'
   // 使用 Cloudflare Worker 处理 OAuth
-  const workerUrl = 'https://blog-oauth.你的worker子域名.workers.dev'
+  const workerUrl = 'https://blog-oauth.a1634358912.workers.dev'
   const redirectUri = `${workerUrl}/oauth/callback`
   const scope = 'repo'
   
