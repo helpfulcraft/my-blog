@@ -3,8 +3,69 @@ title: 文章编辑器
 sidebar: false
 ---
 
+<ClientOnly>
+  <div class="editor-container">
+    <div v-if="!isLoggedIn" class="login-section">
+      <h2>请先登录</h2>
+      <button @click="handleLogin" class="login-button">
+        使用 GitHub 登录
+      </button>
+    </div>
+    
+    <div v-else class="editor-form">
+      <div class="form-group">
+        <label for="title">标题：</label>
+        <input 
+          id="title"
+          v-model="title"
+          type="text"
+          placeholder="文章标题"
+          class="form-input"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="description">描述：</label>
+        <input 
+          id="description"
+          v-model="description"
+          type="text"
+          placeholder="文章简短描述"
+          class="form-input"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="tags">标签：</label>
+        <input 
+          id="tags"
+          v-model="tags"
+          type="text"
+          placeholder="标签，用逗号分隔"
+          class="form-input"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="content">内容：</label>
+        <textarea 
+          id="content"
+          v-model="content"
+          placeholder="使用 Markdown 编写文章内容"
+          class="form-textarea"
+          rows="20"
+        ></textarea>
+      </div>
+
+      <button @click="handlePublish" class="publish-button">
+        发布文章
+      </button>
+    </div>
+  </div>
+</ClientOnly>
+
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 
 const title = ref('')
 const content = ref('')
@@ -13,13 +74,13 @@ const description = ref('')
 const githubToken = ref('')
 const isLoggedIn = ref(false)
 
-onMounted(() => {
+if (typeof window !== 'undefined') {
   const token = localStorage.getItem('github_token')
   if (token) {
     githubToken.value = token
     isLoggedIn.value = true
   }
-})
+}
 
 function handleLogin() {
   const clientId = 'Ov23liRHUKlP6b6PhVoC'
@@ -87,68 +148,7 @@ ${content.value}
 }
 </script>
 
-<template>
-  <div class="editor-container">
-    <div v-if="!isLoggedIn" class="login-section">
-      <h2>请先登录</h2>
-      <button @click="handleLogin" class="login-button">
-        使用 GitHub 登录
-      </button>
-    </div>
-    
-    <div v-else class="editor-form">
-      <div class="form-group">
-        <label for="title">标题：</label>
-        <input 
-          id="title"
-          v-model="title"
-          type="text"
-          placeholder="文章标题"
-          class="form-input"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="description">描述：</label>
-        <input 
-          id="description"
-          v-model="description"
-          type="text"
-          placeholder="文章简短描述"
-          class="form-input"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="tags">标签：</label>
-        <input 
-          id="tags"
-          v-model="tags"
-          type="text"
-          placeholder="标签，用逗号分隔"
-          class="form-input"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="content">内容：</label>
-        <textarea 
-          id="content"
-          v-model="content"
-          placeholder="使用 Markdown 编写文章内容"
-          class="form-textarea"
-          rows="20"
-        ></textarea>
-      </div>
-
-      <button @click="handlePublish" class="publish-button">
-        发布文章
-      </button>
-    </div>
-  </div>
-</template>
-
-<style scoped>
+<style>
 .editor-container {
   max-width: 800px;
   margin: 0 auto;
