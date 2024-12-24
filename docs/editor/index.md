@@ -18,8 +18,8 @@ const { site } = useData()
 
 async function handleLogin() {
   // GitHub OAuth 登录
-  const clientId = 'YOUR_GITHUB_CLIENT_ID'
-  const redirectUri = `${site.base}editor/callback`
+  const clientId = 'Ov23liRHUKlP6b6PhVoC'
+  const redirectUri = `${window.location.origin}/editor/callback`
   const scope = 'repo'
   
   window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`
