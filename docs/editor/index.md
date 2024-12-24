@@ -86,68 +86,26 @@ ${content.value}
     alert('发布失败：' + error.message)
   }
 }
+
+if (typeof window !== 'undefined') {
+  const BlogEditor = defineAsyncComponent(() =>
+    import('../.vitepress/theme/components/BlogEditor.vue')
+  )
+}
 </script>
 
-<template>
-  <div v-if="showEditor" class="editor-container">
-    <div v-if="!isLoggedIn" class="login-section">
-      <h2>请先登录</h2>
-      <button @click="handleLogin" class="login-button">
-        使用 GitHub 登录
-      </button>
-    </div>
-    
-    <div v-else class="editor-form">
-      <div class="form-group">
-        <label for="title">标题：</label>
-        <input 
-          id="title"
-          v-model="title"
-          type="text"
-          placeholder="文章标题"
-          class="form-input"
-        />
+<ClientOnly>
+  <Suspense>
+    <template #default>
+      <BlogEditor />
+    </template>
+    <template #fallback>
+      <div class="loading">
+        <p>加载中...</p>
       </div>
-
-      <div class="form-group">
-        <label for="description">描述：</label>
-        <input 
-          id="description"
-          v-model="description"
-          type="text"
-          placeholder="文章简短描述"
-          class="form-input"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="tags">标签：</label>
-        <input 
-          id="tags"
-          v-model="tags"
-          type="text"
-          placeholder="标签，用逗号分隔"
-          class="form-input"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="content">内容：</label>
-        <textarea 
-          id="content"
-          v-model="content"
-          placeholder="使用 Markdown 编写文章内容"
-          class="form-textarea"
-          rows="20"
-        ></textarea>
-      </div>
-
-      <button @click="handlePublish" class="publish-button">
-        发布文章
-      </button>
-    </div>
-  </div>
-</template>
+    </template>
+  </Suspense>
+</ClientOnly>
 
 <style scoped>
 .editor-container {
@@ -202,5 +160,12 @@ ${content.value}
 .login-button:hover,
 .publish-button:hover {
   background-color: var(--vp-c-brand-dark);
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  font-size: 1.2em;
+  color: #666;
 }
 </style>
