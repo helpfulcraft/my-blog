@@ -10,10 +10,11 @@
     "preview": "vitepress preview docs"
   },
   "dependencies": {
-    "vitepress": "^1.0.0-rc.31",
-    "vue": "^3.3.9",
     "gray-matter": "^4.0.3",
-    "markdown-it-mathjax3": "^4.3.2"
+    "markdown-it": "^14.1.0",
+    "markdown-it-mathjax3": "^4.3.2",
+    "vitepress": "^1.0.0-rc.31",
+    "vue": "^3.3.9"
   },
   "pnpm": {
     "peerDependencyRules": {
