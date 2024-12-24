@@ -108,6 +108,11 @@ tags: [${tags.value.split(',').map(tag => `'${tag.trim()}'`).join(', ')}]
 ${content.value}
 `
     
+    // 使用 TextEncoder 来处理 UTF-8 字符
+    const encoder = new TextEncoder()
+    const data = encoder.encode(fileContent)
+    const base64Content = btoa(String.fromCharCode(...new Uint8Array(data)))
+    
     // 使用 GitHub API 创建文件
     const response = await fetch(`https://api.github.com/repos/helpfulcraft/my-blog/contents/docs/articles/${fileName}`, {
       method: 'PUT',
@@ -117,7 +122,7 @@ ${content.value}
       },
       body: JSON.stringify({
         message: `feat: add new article - ${title.value}`,
-        content: btoa(fileContent),
+        content: base64Content,
         branch: 'master'
       })
     })
@@ -130,10 +135,12 @@ ${content.value}
       tags.value = ''
       description.value = ''
     } else {
-      throw new Error('发布失败')
+      const errorData = await response.json()
+      throw new Error(`发布失败: ${errorData.message}`)
     }
   } catch (error) {
     alert('发布失败：' + error.message)
+    console.error('发布错误：', error)
   }
 }
 </script>
