@@ -69,7 +69,10 @@ const description = ref('')
 const githubToken = ref('')
 const isLoggedIn = ref(false)
 
-onMounted(() => {
+// 模拟异步加载
+await new Promise(resolve => setTimeout(resolve, 100))
+
+onMounted(async () => {
   // 检查本地存储中的 token
   const token = localStorage.getItem('github_token')
   if (token) {
@@ -154,7 +157,7 @@ ${content.value}
 
 .login-section {
   text-align: center;
-  padding: 40px 0;
+  padding: 40px;
 }
 
 .form-group {
@@ -182,6 +185,7 @@ ${content.value}
   border-radius: 4px;
   font-size: 16px;
   font-family: monospace;
+  resize: vertical;
 }
 
 .login-button,
@@ -193,10 +197,16 @@ ${content.value}
   border-radius: 4px;
   cursor: pointer;
   font-size: 16px;
+  transition: background-color 0.2s;
 }
 
 .login-button:hover,
 .publish-button:hover {
   background-color: var(--vp-c-brand-dark);
+}
+
+.login-button:active,
+.publish-button:active {
+  transform: translateY(1px);
 }
 </style>
