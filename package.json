@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "vitepress dev docs",
     "build": "vitepress build docs",
-    "preview": "vitepress preview docs"
+    "preview": "vitepress preview docs",
+    "new": "node scripts/new-post.js"
   },
   "dependencies": {
     "vitepress": "^1.0.0-rc.31",
