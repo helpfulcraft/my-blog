@@ -13,8 +13,19 @@ const tags = ref('')
 const description = ref('')
 const githubToken = ref('')
 const isLoggedIn = ref(false)
+const showEditor = ref(false)
 
 const { site } = useData()
+
+onMounted(() => {
+  // 检查本地存储中的 token
+  const token = localStorage.getItem('github_token')
+  if (token) {
+    githubToken.value = token
+    isLoggedIn.value = true
+  }
+  showEditor.value = true
+})
 
 async function handleLogin() {
   // GitHub OAuth 登录
@@ -78,7 +89,7 @@ ${content.value}
 </script>
 
 <template>
-  <div class="editor-container">
+  <div v-if="showEditor" class="editor-container">
     <div v-if="!isLoggedIn" class="login-section">
       <h2>请先登录</h2>
       <button @click="handleLogin" class="login-button">
