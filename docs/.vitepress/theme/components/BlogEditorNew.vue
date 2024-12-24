@@ -1,5 +1,5 @@
 &lt;template&gt;
-  &lt;div class=&quot;editor-container&quot;&gt;
+  &lt;div v-if=&quot;mounted&quot; class=&quot;editor-container&quot;&gt;
     &lt;div v-if=&quot;!isLoggedIn&quot; class=&quot;login-section&quot;&gt;
       &lt;h2&gt;请先登录&lt;/h2&gt;
       &lt;button @click=&quot;handleLogin&quot; class=&quot;login-button&quot;&gt;
@@ -57,6 +57,9 @@
       &lt;/button&gt;
     &lt;/div&gt;
   &lt;/div&gt;
+  &lt;div v-else class=&quot;loading&quot;&gt;
+    加载中...
+  &lt;/div&gt;
 &lt;/template&gt;
 
 &lt;script setup&gt;
@@ -68,8 +71,10 @@ const tags = ref('')
 const description = ref('')
 const githubToken = ref('')
 const isLoggedIn = ref(false)
+const mounted = ref(false)
 
 onMounted(() => {
+  mounted.value = true
   const token = localStorage.getItem('github_token')
   if (token) {
     githubToken.value = token
@@ -148,6 +153,13 @@ ${content.value}
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  font-size: 1.2em;
+  color: #666;
 }
 
 .login-section {
