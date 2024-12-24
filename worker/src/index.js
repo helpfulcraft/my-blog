@@ -1,9 +1,7 @@
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
-    const baseUrl = url.hostname === "blog-oauth.a1634358912.workers.dev" 
-      ? "https://blog-oauth.a1634358912.workers.dev"
-      : url.origin;
+    const redirectBaseUrl = "https://my-blog-fqw.pages.dev";
 
     // 处理 CORS
     if (request.method === "OPTIONS") {
@@ -58,7 +56,7 @@ export default {
         
         // 重定向回编辑器页面，将 token 作为 URL 参数
         return Response.redirect(
-          `${baseUrl}/editor/callback?token=${data.access_token}`,
+          `${redirectBaseUrl}/editor/callback?token=${data.access_token}`,
           302
         );
       } catch (error) {
