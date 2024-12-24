@@ -1,0 +1,17 @@
+---
+title: 文章编辑器
+sidebar: false
+---
+
+# 文章编辑器
+
+<ClientOnly>
+  <BlogEditor />
+</ClientOnly>
+
+<style>
+:root {
+  --vp-c-brand: #3eaf7c;
+  --vp-c-brand-dark: #2c855c;
+}
+</style>
