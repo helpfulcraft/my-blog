@@ -51,8 +51,20 @@
       </div>
 
       <div class="editor-main">
-        <div class="editor-section">
-          <label for="content">编写内容：</label>
+        <div class="editor-section" :class="{ 'full-width': !showPreview }">
+          <div class="editor-header">
+            <label for="content">编写内容：</label>
+            <div class="view-toggle">
+              <button 
+                @click="showPreview = !showPreview" 
+                :title="showPreview ? '隐藏预览' : '显示预览'"
+                class="view-toggle-btn"
+              >
+                {{ showPreview ? '隐藏预览' : '显示预览' }}
+              </button>
+            </div>
+          </div>
+          
           <div class="editor-toolbar">
             <button @click="insertMarkdown('**', '**')" title="粗体">B</button>
             <button @click="insertMarkdown('*', '*')" title="斜体">I</button>
@@ -62,30 +74,41 @@
             <button @click="insertMarkdown('![alt](', ')')" title="图片">🖼</button>
             <button @click="insertMarkdown('```\n', '\n```')" title="代码块">&lt;/&gt;</button>
           </div>
-          <textarea 
-            id="content"
-            ref="contentInput"
-            v-model="content"
-            placeholder="使用 Markdown 编写文章内容"
-            class="form-textarea"
-            rows="20"
-            @keydown.tab.prevent="handleTab"
-          ></textarea>
-        </div>
-        
-        <div class="preview-section">
-          <label>预览：</label>
-          <div class="markdown-preview" v-html="renderedContent"></div>
+
+          <div class="editor-content-wrapper">
+            <textarea 
+              id="content"
+              ref="contentInput"
+              v-model="content"
+              placeholder="使用 Markdown 编写文章内容"
+              class="form-textarea"
+              @keydown.tab.prevent="handleTab"
+              @scroll="syncScroll"
+            ></textarea>
+
+            <div 
+              v-if="showPreview" 
+              class="inline-preview markdown-preview"
+              ref="previewPanel"
+              @scroll="syncScroll"
+              v-html="renderedContent"
+            ></div>
+          </div>
         </div>
       </div>
 
       <div class="form-footer">
-        <button @click="handlePublish" class="publish-button" :disabled="publishing">
-          {{ publishing ? '发布中...' : '发布文章' }}
-        </button>
-        <button @click="saveDraft" class="draft-button">
-          保存草稿
-        </button>
+        <div class="autosave-status" v-if="lastSaved">
+          {{ lastSaved }}
+        </div>
+        <div class="button-group">
+          <button @click="handlePublish" class="publish-button" :disabled="publishing">
+            {{ publishing ? '发布中...' : '发布文章' }}
+          </button>
+          <button @click="saveDraft" class="draft-button">
+            保存草稿
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -116,6 +139,8 @@ export default {
     const mounted = ref(false)
     const publishing = ref(false)
     const contentInput = ref(null)
+    const showPreview = ref(true)
+    const lastSaved = ref(null)
 
     const renderedContent = computed(() => {
       return md.render(content.value || '')
@@ -152,7 +177,10 @@ export default {
         lastSaved: new Date().toISOString()
       }
       localStorage.setItem('article_draft', JSON.stringify(draftData))
-      alert('草稿已保存')
+      lastSaved.value = '草稿已保存于 ' + draftData.lastSaved
+      setTimeout(() => {
+        lastSaved.value = null
+      }, 2000)
     }
 
     function addTag() {
@@ -288,6 +316,16 @@ ${content.value}
       }
     }
 
+    function syncScroll(e) {
+      const textarea = contentInput.value
+      const previewPanel = this.$refs.previewPanel
+      if (e.target === textarea) {
+        previewPanel.scrollTop = textarea.scrollTop
+      } else {
+        textarea.scrollTop = previewPanel.scrollTop
+      }
+    }
+
     return {
       title,
       content,
@@ -299,6 +337,8 @@ ${content.value}
       mounted,
       publishing,
       contentInput,
+      showPreview,
+      lastSaved,
       renderedContent,
       handleLogin,
       handlePublish,
@@ -306,7 +346,8 @@ ${content.value}
       addTag,
       removeTag,
       insertMarkdown,
-      handleTab
+      handleTab,
+      syncScroll
     }
   }
 }
@@ -548,5 +589,68 @@ ${content.value}
   background-color: var(--vp-c-bg-soft);
   border-radius: 6px;
   display: block;
+}
+
+.editor-content-wrapper {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+
+.editor-content-wrapper .form-textarea {
+  flex: 1;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.editor-content-wrapper .inline-preview {
+  flex: 1;
+  height: 100%;
+  overflow-y: auto;
+  padding: 20px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 4px;
+  background: var(--vp-c-bg);
+}
+
+.editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.view-toggle {
+  display: flex;
+  align-items: center;
+}
+
+.view-toggle-btn {
+  padding: 5px 10px;
+  border: none;
+  background: var(--vp-c-bg-soft);
+  color: var(--vp-c-text-1);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.view-toggle-btn:hover {
+  background: var(--vp-c-bg-mute);
+}
+
+.autosave-status {
+  font-size: 14px;
+  color: var(--vp-c-text-2);
+  margin-bottom: 10px;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+}
+
+.full-width {
+  grid-column: 1 / 3;
 }
 </style>
