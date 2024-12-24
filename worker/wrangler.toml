@@ -1,0 +1,9 @@
+name = "blog-oauth"
+main = "src/index.js"
+compatibility_date = "2023-12-24"
+
+[vars]
+GITHUB_CLIENT_ID = "Ov23liRHUKlP6b6PhVoC"
+
+# 在实际部署时，你需要在 Cloudflare Dashboard 中设置这个密钥
+# GITHUB_CLIENT_SECRET = "your-client-secret"
