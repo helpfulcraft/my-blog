@@ -1,0 +1,25 @@
+{
+  "name": "my-blog",
+  "version": "1.0.0",
+  "description": "My Tech Blog",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev docs",
+    "build": "vitepress build docs",
+    "preview": "vitepress preview docs"
+  },
+  "devDependencies": {
+    "vitepress": "^1.0.0-rc.31",
+    "vue": "^3.3.9",
+    "gray-matter": "^4.0.3",
+    "markdown-it-mathjax3": "^4.3.2"
+  },
+  "pnpm": {
+    "peerDependencyRules": {
+      "ignoreMissing": [
+        "@algolia/client-search"
+      ]
+    }
+  }
+}

@@ -1,0 +1,141 @@
+/* 标题样式 */
+h1 {
+  color: #2c3e50;  /* 深蓝灰色 */
+}
+
+h2 {
+  color: #3498db;  /* 蓝色 */
+}
+
+h3 {
+  color: #16a085;  /* 绿色 */
+}
+
+h4 {
+  color: #e67e22;  /* 橙色 */
+}
+
+h5 {
+  color: #9b59b6;  /* 紫色 */
+}
+
+h6 {
+  color: #e74c3c;  /* 红色 */
+}
+
+/* 目录样式 */
+.VPDocOutlineItem {
+  display: block !important;
+}
+
+.VPDocOutlineItem.level-2 .text {
+  color: #3498db !important;
+}
+
+.VPDocOutlineItem.level-3 .text {
+  color: #16a085 !important;
+  padding-left: 12px !important;
+}
+
+.VPDocOutlineItem.level-4 .text {
+  color: #e67e22 !important;
+  padding-left: 24px !important;
+}
+
+.VPDocOutlineItem.level-5 .text {
+  color: #9b59b6 !important;
+  padding-left: 36px !important;
+}
+
+.VPDocOutlineItem.level-6 .text {
+  color: #e74c3c !important;
+  padding-left: 48px !important;
+}
+
+/* 强制显示所有级别的标题 */
+.VPDocOutline .outline-marker,
+.VPDocOutline .outline-link {
+  display: block !important;
+  opacity: 1 !important;
+}
+
+.VPDocOutline .outline-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+/* 悬停效果 */
+.VPDocOutlineItem .text:hover {
+  opacity: 0.8;
+}
+
+/* 图片组样式 */
+.image-group {
+  display: flex;
+  gap: 1rem;
+  margin: 1rem 0;
+  flex-wrap: wrap;
+}
+
+.image-group img {
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* 图片说明样式 */
+figure {
+  margin: 1rem 0;
+  text-align: center;
+}
+
+figure img {
+  max-width: 100%;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+figcaption {
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+/* 任务列表样式 */
+.task-list-item {
+  list-style-type: none;
+}
+
+.task-list-item input[type="checkbox"] {
+  margin-right: 0.5rem;
+}
+
+/* 响应式图片 */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* 标题颜色图例样式 */
+.heading-colors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.color-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.color-box {
+  width: 20px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+.color-label {
+  font-size: 0.9em;
+  color: #666;
+}
