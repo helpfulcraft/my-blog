@@ -60,7 +60,7 @@
             <button @click="insertMarkdown('- ')" title="列表">•</button>
             <button @click="insertMarkdown('[', '](url)')" title="链接">🔗</button>
             <button @click="insertMarkdown('![alt](', ')')" title="图片">🖼</button>
-            <button @click="insertMarkdown('```\\n', '\\n```')" title="代码块">{'</>'}</button>
+            <button @click="insertMarkdown('```\n', '\n```')" title="代码块">&lt;/&gt;</button>
           </div>
           <textarea 
             id="content"
