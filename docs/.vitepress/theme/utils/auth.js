@@ -5,7 +5,7 @@ const config = {
     ? 'http://localhost:5173/auth/callback'
     : 'https://oauth-login.my-blog-fqw.pages.dev/auth/callback',
   scope: 'repo',
-  workerUrl: 'https://auth.my-blog-helpfulcraft.pages.dev'
+  workerUrl: 'https://blog-auth.a1634358912.workers.dev'
 }
 
 // 获取授权 URL
