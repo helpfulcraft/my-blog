@@ -2,7 +2,9 @@
 const config = {
   clientId: 'Ov23lidgLe1RzdUISJ2R',
   clientSecret: '57f7add2e7d91efd06eef9ee99bea8ef35ff05cf',
-  redirectUri: 'http://localhost:5173/auth/callback',
+  redirectUri: import.meta.env.DEV 
+    ? 'http://localhost:5173/auth/callback'
+    : 'https://oauth-login.my-blog-fqw.pages.dev/auth/callback',
   scope: 'repo'
 }
 
@@ -21,7 +23,7 @@ export function getAuthUrl() {
 export async function getUserInfo(token) {
   const response = await fetch('https://api.github.com/user', {
     headers: {
-      'Authorization': `token ${token}`,
+      'Authorization': `Bearer ${token}`,
       'Accept': 'application/vnd.github.v3+json'
     }
   })
