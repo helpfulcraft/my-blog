@@ -1,11 +1,11 @@
 // GitHub OAuth 配置
 const config = {
   clientId: 'Ov23lidgLe1RzdUISJ2R',
-  clientSecret: '57f7add2e7d91efd06eef9ee99bea8ef35ff05cf',
   redirectUri: import.meta.env.DEV 
     ? 'http://localhost:5173/auth/callback'
     : 'https://oauth-login.my-blog-fqw.pages.dev/auth/callback',
-  scope: 'repo'
+  scope: 'repo',
+  workerUrl: 'https://auth.my-blog-helpfulcraft.pages.dev'
 }
 
 // 获取授权 URL
@@ -35,19 +35,11 @@ export async function getUserInfo(token) {
 
 // 处理认证回调
 export async function handleCallback(code) {
-  const tokenUrl = 'https://github.com/login/oauth/access_token'
-  const response = await fetch(tokenUrl, {
-    method: 'POST',
+  const response = await fetch(`${config.workerUrl}/oauth/callback?code=${code}`, {
+    method: 'GET',
     headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      client_id: config.clientId,
-      client_secret: config.clientSecret,
-      code: code,
-      redirect_uri: config.redirectUri
-    })
+      'Accept': 'application/json'
+    }
   })
 
   if (!response.ok) {

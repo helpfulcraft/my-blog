@@ -3,10 +3,10 @@ main = "src/index.js"
 compatibility_date = "2023-12-24"
 
 [vars]
-GITHUB_CLIENT_ID = "Ov23liRHUKlP6b6PhVoC"
+GITHUB_CLIENT_ID = "Ov23lidgLe1RzdUISJ2R"
 
-# 在实际部署时，你需要在 Cloudflare Dashboard 中设置这个密钥
-# GITHUB_CLIENT_SECRET = "your-client-secret"
+# 在 Cloudflare Dashboard 中设置这个密钥
+# GITHUB_CLIENT_SECRET = "57f7add2e7d91efd06eef9ee99bea8ef35ff05cf"
 
 [[routes]]
 pattern = "auth.my-blog-helpfulcraft.pages.dev"
