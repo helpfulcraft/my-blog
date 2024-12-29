@@ -56,7 +56,7 @@ export default defineConfig({
 
     // 社交链接
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/YOUR_GITHUB_USERNAME' }
+      { icon: 'github', link: 'https://github.com/helpfulcraft' }
     ],
 
     // 页脚
@@ -81,7 +81,7 @@ export default defineConfig({
 
     // 编辑链接
     editLink: {
-      pattern: 'https://github.com/YOUR_GITHUB_USERNAME/my-blog/edit/main/docs/:path',
+      pattern: 'https://github.com/helpfulcraft/my-blog/edit/master/docs/:path',
       text: '在 GitHub 上编辑此页'
     },
 

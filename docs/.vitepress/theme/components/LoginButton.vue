@@ -11,85 +11,77 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { ref, onMounted } from 'vue'
+import { getAuthUrl, getUserInfo } from '../utils/auth'
 
-export default {
-  setup() {
-    const isLoggedIn = ref(false)
-    const loading = ref(false)
-    const userAvatar = ref('')
-    const userName = ref('')
+const isLoggedIn = ref(false)
+const loading = ref(false)
+const userAvatar = ref('')
+const userName = ref('')
 
-    // GitHub OAuth 配置
-    const clientId = 'Ov23liCN7hteMLHGth2i'
-    const redirectUri = 'https://my-blog-helpfulcraft.pages.dev/auth/callback'
-    const scope = 'repo'
+async function checkAuth() {
+  const token = localStorage.getItem('github_token')
+  if (!token) return
 
-    async function checkAuth() {
-      const token = localStorage.getItem('github_token')
-      if (token) {
-        try {
-          const response = await fetch('https://api.github.com/user', {
-            headers: {
-              'Authorization': `token ${token}`,
-              'User-Agent': 'My-Blog'
-            }
-          })
-          if (response.ok) {
-            const data = await response.json()
-            isLoggedIn.value = true
-            userAvatar.value = data.avatar_url
-            userName.value = data.login
-          } else {
-            localStorage.removeItem('github_token')
-          }
-        } catch (error) {
-          console.error('Auth check failed:', error)
-          localStorage.removeItem('github_token')
-        }
-      }
-    }
-
-    function login() {
-      loading.value = true
-      const authUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`
-      const authWindow = window.open(authUrl, 'github-oauth', 'width=600,height=800')
-
-      window.addEventListener('message', async (event) => {
-        if (event.origin !== window.location.origin) return
-        
-        if (event.data.type === 'github_auth') {
-          const { token } = event.data
-          localStorage.setItem('github_token', token)
-          await checkAuth()
-          loading.value = false
-          authWindow?.close()
-        }
-      })
-    }
-
-    function logout() {
-      localStorage.removeItem('github_token')
-      isLoggedIn.value = false
-      userAvatar.value = ''
-      userName.value = ''
-    }
-
-    onMounted(() => {
-      checkAuth()
-    })
-
-    return {
-      isLoggedIn,
-      loading,
-      userAvatar,
-      userName,
-      login,
-      logout
-    }
+  try {
+    const user = await getUserInfo(token)
+    isLoggedIn.value = true
+    userAvatar.value = user.avatar_url
+    userName.value = user.login
+  } catch (error) {
+    console.error('Auth check failed:', error)
+    localStorage.removeItem('github_token')
   }
 }
+
+function login() {
+  loading.value = true
+  const authUrl = getAuthUrl()
+  const authWindow = window.open(authUrl, 'github-oauth', 'width=600,height=800')
+
+  if (!authWindow) {
+    alert('弹窗被阻止，请允许弹窗后重试')
+    loading.value = false
+    return
+  }
+
+  const messageHandler = async (event) => {
+    if (event.origin !== window.location.origin) return
+    
+    if (event.data?.type === 'github_auth') {
+      const { token } = event.data
+      if (!token) {
+        console.error('No token received')
+        loading.value = false
+        return
+      }
+
+      localStorage.setItem('github_token', token)
+      await checkAuth()
+      loading.value = false
+      authWindow?.close()
+      window.removeEventListener('message', messageHandler)
+    }
+  }
+
+  window.addEventListener('message', messageHandler)
+  setTimeout(() => {
+    window.removeEventListener('message', messageHandler)
+    loading.value = false
+  }, 300000)
+}
+
+function logout() {
+  localStorage.removeItem('github_token')
+  isLoggedIn.value = false
+  userAvatar.value = ''
+  userName.value = ''
+}
+
+onMounted(() => {
+  checkAuth()
+})
 </script>
 
 <style scoped>
@@ -106,25 +98,25 @@ export default {
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.9rem;
-  transition: all 0.2s;
+  transition: background-color 0.2s;
 }
 
 .login-button {
-  background: var(--vp-c-brand);
+  background-color: var(--vp-c-brand);
   color: white;
 }
 
 .login-button:hover {
-  background: var(--vp-c-brand-dark);
+  background-color: var(--vp-c-brand-dark);
 }
 
 .logout-button {
-  background: var(--vp-c-bg-soft);
+  background-color: var(--vp-c-gray-light-4);
   color: var(--vp-c-text-1);
 }
 
 .logout-button:hover {
-  background: var(--vp-c-bg-mute);
+  background-color: var(--vp-c-gray-light-3);
 }
 
 .user-info {
