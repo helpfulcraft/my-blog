@@ -9,7 +9,7 @@ onMounted(() => {
   
   if (code) {
     // 调用 Cloudflare Worker 处理认证
-    fetch(`https://auth.my-blog-helpfulcraft.pages.dev/auth?code=${code}`)
+    fetch(`https://auth.my-blog-fqw.pages.dev/auth?code=${code}`)
       .then(response => response.text())
       .then(html => {
         document.body.innerHTML = html
